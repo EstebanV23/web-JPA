@@ -2,6 +2,8 @@ package com.proyectoweb.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "employee")
@@ -15,6 +17,7 @@ public class Employee {
   private String email;
   @OneToOne
   @JoinColumn(name = "id_personal_computer")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private PersonalComputer personalComputer;
 
   public PersonalComputer getPersonalComputer() {

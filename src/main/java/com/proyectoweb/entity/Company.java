@@ -16,10 +16,50 @@ public class Company {
   @NotEmpty
   private String name;
   private String address;
-  @OneToMany
+  @OneToMany()
   @JoinColumn(name = "id_company")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<Employee> employees;
+  @ManyToOne
+  @JoinColumn(name = "id_owner")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Owner owner;
+  @ManyToMany
+  @JoinColumn(name = "id_supplier")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private List<Supplier> suppliers;
+  public Owner getOwner() {
+    return owner;
+  }
+
+  public List<Supplier> getSuppliers() {
+    return suppliers;
+  }
+
+  public Company(Long id, String name, String address, List<Employee> employees, Owner owner, List<Supplier> suppliers) {
+    this.id = id;
+    this.name = name;
+    this.address = address;
+    this.employees = employees;
+    this.owner = owner;
+    this.suppliers = suppliers;
+  }
+
+  public void setSuppliers(List<Supplier> suppliers) {
+    this.suppliers = suppliers;
+  }
+
+  public void setOwner(Owner owner) {
+    this.owner = owner;
+  }
+
+  public Company(Long id, String name, String address, List<Employee> employees, Owner owner) {
+    this.id = id;
+    this.name = name;
+    this.address = address;
+    this.employees = employees;
+    this.owner = owner;
+  }
 
   public Company() {
   }

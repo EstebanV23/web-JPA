@@ -1,10 +1,8 @@
 package com.proyectoweb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proyectoweb.entity.Company;
-import com.proyectoweb.entity.Employee;
-import com.proyectoweb.entity.ErrorResponse;
-import com.proyectoweb.entity.SuccessResponse;
+import com.proyectoweb.entity.*;
+import com.proyectoweb.helper.HelperInformation;
 import com.proyectoweb.repository.CompanyInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,15 +72,32 @@ public class CompanyController {
   @PatchMapping("/update/{id}")
   public ResponseEntity updateCompany (@PathVariable Long id, @RequestBody Map<String, Object> body) {
       try {
-      Company company = companyInterface.findById(id.toString()).orElse(null);
-      if (company == null) {
-          return new ErrorResponse("Company not found", HttpStatus.NOT_FOUND, "Company not found").response();
-      }
+        Company company = companyInterface.findById(id.toString()).orElse(null);
+        if (company == null) {
+            return new ErrorResponse("Company not found", HttpStatus.NOT_FOUND, "Company not found").response();
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         Company companyUpdate = objectMapper.convertValue(body, Company.class);
-        company.setAddress(companyUpdate.getAddress());
-        company.setName(companyUpdate.getName());
-        Company saveCompany = companyInterface.save(companyUpdate);
+        String newAddress = HelperInformation.updateInfoWithInformation(company.getAddress(), companyUpdate.getAddress());
+        String newName = HelperInformation.updateInfoWithInformation(company.getAddress(), companyUpdate.getAddress());
+        company.setAddress(newAddress);
+        company.setName(newName);
+
+        if (companyUpdate.getEmployees() != null) {
+          List<Employee> currentEmployees = company.getEmployees();
+          currentEmployees.addAll(companyUpdate.getEmployees());
+          company.setEmployees(currentEmployees);
+        }
+
+        if (companyUpdate.getSuppliers() != null) {
+          List<Supplier> suppliers = company.getSuppliers();
+          suppliers.addAll(companyUpdate.getSuppliers());
+          company.setSuppliers(suppliers);
+        }
+
+        Owner newOwner = HelperInformation.updateInfoWithInformation(company.getOwner(), companyUpdate.getOwner());
+        company.setOwner(newOwner);
+        Company saveCompany = companyInterface.save(company);
         return new SuccessResponse("Company updated", saveCompany).response();
       }
       catch (Exception e) {
