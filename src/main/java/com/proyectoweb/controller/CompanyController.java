@@ -79,7 +79,7 @@ public class CompanyController {
         ObjectMapper objectMapper = new ObjectMapper();
         Company companyUpdate = objectMapper.convertValue(body, Company.class);
         String newAddress = HelperInformation.updateInfoWithInformation(company.getAddress(), companyUpdate.getAddress());
-        String newName = HelperInformation.updateInfoWithInformation(company.getAddress(), companyUpdate.getAddress());
+        String newName = HelperInformation.updateInfoWithInformation(company.getName(), companyUpdate.getName());
         company.setAddress(newAddress);
         company.setName(newName);
 
